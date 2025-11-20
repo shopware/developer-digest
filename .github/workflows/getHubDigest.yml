@@ -1,0 +1,43 @@
+name: Community Hub Developer Digest
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 15 1 * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  devDigest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Api Call
+        env:
+          HUB_API_KEY: ${{ secrets.HUB_API_KEY }}
+        timeout-minutes: 1
+        shell: bash
+        run: |
+          echo "Calling the api to get the monthly digest"
+          mkdir -p digest
+          FILENAME="dev-digest-$(date +%Y-%m).md"
+          curl --fail-with-body \
+            -X GET \
+            -H "Content-Type: text/plain" \
+            -H "X-Shopware-Api-Key: $HUB_API_KEY" \
+            https://hub.shopware.com/api/cron/monthly-digest | tee digest/$FILENAME
+            
+      - name: Push
+        run: |
+          FILENAME="dev-digest-$(date +%Y-%m).md"
+          git config user.name "shopwareBot"
+          git config user.email "example@example.com"
+          git add digest/
+          git commit -m"chore: dev digest $FILENAME"
+          git push
+      
+                 
