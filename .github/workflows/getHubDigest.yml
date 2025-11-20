@@ -2,6 +2,8 @@ name: Community Hub Developer Digest
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 15 1 * *'
 
 permissions:
   contents: write
