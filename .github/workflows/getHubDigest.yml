@@ -24,7 +24,7 @@ jobs:
         run: |
           echo "Calling the api to get the monthly digest"
           mkdir -p digest
-          FILENAME="dev-digest-$(date +%Y-%m).md"
+          FILENAME="dev-digest-$(date --date='-1 month' +%Y-%m).md"
           curl --fail-with-body \
             -X GET \
             -H "Content-Type: text/plain" \
@@ -33,7 +33,7 @@ jobs:
             
       - name: Push
         run: |
-          FILENAME="dev-digest-$(date +%Y-%m).md"
+          FILENAME="dev-digest-$(date --date='-1 month' +%Y-%m).md"
           git config user.name "shopwareBot"
           git config user.email "example@example.com"
           git add digest/
